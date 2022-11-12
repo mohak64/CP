@@ -1,0 +1,105 @@
+class DisjointSet {
+    
+    vector<int> rank, parent, size; 
+public: 
+    int count;
+    DisjointSet(int n) {
+        
+        rank.resize(n+1, 0); 
+        parent.resize(n+1);
+        size.resize(n+1); 
+        for(int i = 0;i<=n;i++) {
+            parent[i] = i; 
+            size[i] = 1; 
+        }
+    }
+
+    int findUPar(int node) {
+        if(node == parent[node])
+            return node; 
+        return parent[node] = findUPar(parent[node]); 
+    }
+
+    void unionByRank(int u, int v) {
+        int ulp_u = findUPar(u); 
+        int ulp_v = findUPar(v); 
+        if(ulp_u == ulp_v) return; 
+        if(rank[ulp_u] < rank[ulp_v]) {
+            parent[ulp_u] = ulp_v; 
+        }
+        else if(rank[ulp_v] < rank[ulp_u]) {
+            parent[ulp_v] = ulp_u; 
+        }
+        else {
+            parent[ulp_v] = ulp_u; 
+            rank[ulp_u]++; 
+        }
+    }
+
+    void unionBySize(int u, int v) {  //a small change in striver DSU func.
+        int ulp_u = findUPar(u); 
+        int ulp_v = findUPar(v); 
+        if(ulp_u == ulp_v) count++; 
+        else{
+        if(size[ulp_u] < size[ulp_v]) {
+            parent[ulp_u] = ulp_v; 
+            size[ulp_v] += size[ulp_u]; 
+        }
+        else {
+            parent[ulp_v] = ulp_u;
+            size[ulp_u] += size[ulp_v]; 
+             }
+        }
+    }
+}; 
+
+
+class Solution {
+public:
+    int regionsBySlashes(vector<string>& grid) {
+        int n= grid.size();
+        int dots= n+1; 
+        int m= dots*dots; 
+        
+        DisjointSet ds(m);
+        
+        for(int i=0;i<dots;i++) //Connecting all boundary elements 
+        {
+            for(int j=0;j<dots;j++)
+            {
+                if(i==0 or j==0 or i==dots-1 or j==dots-1)
+                {   
+                int cellno=i*dots+j;
+                if(cellno!=0)
+                ds.unionBySize(0,cellno);
+                }
+            }
+        }
+        
+        for(int i=0;i<n;i++)
+            {
+            for(int j=0;j<n;j++)
+                {
+                if(grid[i][j]=='/')  //cell 1= (i,j+1) cell 2=(i+1,j)
+                    {
+                    int cellno1=i*dots+(j+1);
+                    int cellno2=(i+1)*dots+j;
+                    ds.unionBySize(cellno1,cellno2);
+                    }
+                else if(grid[i][j]=='\\') //cell 1= (i,j) cell 2=(i+1,j+1)
+                    {
+                    int cellno1=i*dots+j;
+                    int cellno2=(i+1)*dots+(j+1);
+                    
+                    ds.unionBySize(cellno1,cellno2);
+                    }
+                    
+                }
+            }
+        return ds.count+1; // bcoz initial box is also a cycle
+        
+        
+        
+        
+    }
+};
