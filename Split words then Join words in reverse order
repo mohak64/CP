@@ -1,0 +1,49 @@
+class Solution {
+public:
+    string reverseWords(string s) {
+        vector<string> words;
+        stringstream ss(s);
+        string tmp;
+        while (ss >> tmp)
+            words.push_back(tmp);
+
+        string ans;
+        for (int i = words.size() - 1; i >= 0; --i) {
+            if (i != words.size() - 1) ans += " ";
+            ans += words[i];
+        }
+        return ans;
+    }
+};
+
+//my solution 
+class Solution {
+public:
+    string reverseWords(string s) {
+        vector<string>str;
+        string word="";
+        for(int i=0;i<s.length();i++){
+            if(isspace(s[i]) && word.length()>0){
+                str.push_back(word);
+                word="";
+                
+            }
+            else if( i==s.length()-1 && !isspace(s[i])){
+                word+=s[i];
+                str.push_back(word);
+                word="";
+            }
+            else if(!isspace(s[i]))  word+=s[i];
+            
+           
+        }
+        string ans="";
+        for(int i=str.size()-1;i>=0;i--){
+            if(i==0){
+               ans=ans+str[i]; 
+            }
+            else ans=ans+str[i]+" ";
+        }
+        return ans;
+    }
+};
