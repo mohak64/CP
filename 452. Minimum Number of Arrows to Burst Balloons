@@ -1,12 +1,19 @@
-int findMinArrowShots(vector<pair<int, int>>& points) {
-        int count = 0, minEnd = INT_MAX;
-        sort(points.begin(), points.end());
-        for(auto& p: points) {
-            if(p.first > minEnd) {count++; minEnd = p.second;}
-            else minEnd = min(minEnd, p.second);
+class Solution {
+public:
+    int findMinArrowShots(vector<vector<int>>& p) {
+        sort(p.begin(), p.end());
+        int lastpoint = p[0][1];
+        int ans = 1;
+        for(auto point : p) {
+            if(point[0] > lastpoint) {
+                ans++;
+                lastpoint = point[1];
+            }
+            lastpoint = min(point[1],lastpoint);
         }
-        return count + !points.empty();
+        return ans;
     }
+};
     
     int count = 0; // Global parameters that are useful for results.
 int minEnd = INT_MAX; // Key parameters characterizing the "active set" for overlapping intervals, e.g. the minimum ending point among all overlapping intervals.
