@@ -1,0 +1,55 @@
+We prove the following statement.
+If sum of all gas[i]-cost[i] is greater than or equal to 0, then there is a start position you can travel the whole circle.
+Let i be the index such that the the partial sum
+
+gas[0]-cost[0]+gas[1]-cost[1]+...+gas[i]-cost[i]
+is the smallest, then the start position should be start=i+1 ( start=0 if i=n-1). Consider any other partial sum, for example,
+
+gas[0]-cost[0]+gas[1]-cost[1]+...+gas[i]-cost[i]+gas[i+1]-cost[i+1]
+Since gas[0]-cost[0]+gas[1]-cost[1]+...+gas[i]-cost[i] is the smallest, we must have
+
+gas[i+1]-cost[i+1]>=0
+in order for gas[0]-cost[0]+gas[1]-cost[1]+...+gas[i]-cost[i]+gas[i+1]-cost[i+1] to be greater.
+The same reasoning gives that
+
+ gas[i+1]-cost[i+1]>=0
+ gas[i+1]-cost[i+1]+gas[i+2]-cost[i+2]>=0
+ .......
+ gas[i+1]-cost[i+1]+gas[i+2]-cost[i+2]+...+gas[n-1]-cost[n-1]>=0
+What about for the partial sums that wraps around? ("wraps around" means from i+1,i+2,... to n-1 then back to 0,1,2,...).
+
+gas[0]-cost[0]+gas[1]-cost[1]+...+gas[j]-cost[j] + gas[i+1]-cost[i+1]+...+gas[n-1]-cost[n-1]
+>=
+gas[0]-cost[0]+gas[1]-cost[1]+...+gas[i]-cost[i] + gas[i+1]-cost[i+1]+...+gas[n-1]-cost[n-1]
+>=0
+j is some index, 0<=j<=i.
+The first inequality is due to the assumption that gas[0]-cost[0]+gas[1]-cost[1]+...+gas[i]-cost[i] is the smallest.
+The last inequality is due to the assumption that the entire sum of gas[k]-cost[k] for k from 0 to n-1 is greater than or equal to 0.
+So we have that all the partial sums starting from i+1 is non-negative:
+
+gas[i+1]-cost[i+1]>=0,
+gas[i+1]-cost[i+1]+gas[i+2]-cost[i+2]>=0,
+gas[i+1]-cost[i+1]+gas[i+2]-cost[i+2]+...+gas[n-1]-cost[n-1]>=0,
+...
+gas[i+1]-cost[i+1]+...+gas[n-1]-cost[n-1] + gas[0]-cost[0]+gas[1]-cost[1]+...+gas[j]-cost[j]>=0,
+...
+Thus i+1 is the position to start. Coding using this reasoning is as follows:
+
+class Solution {
+public:
+    int canCompleteCircuit(vector<int>& gas, vector<int>& cost)
+	{
+        int n = gas.size();
+        int total(0), subsum(INT_MAX), start(0);
+        for(int i = 0; i < n; ++i)
+		{
+            total += gas[i] - cost[i];
+            if(total < subsum) 
+			{
+                subsum = total;
+                start  = i + 1;
+            }
+        }
+        return (total < 0) ?  -1 : (start % n); 
+    }
+};
