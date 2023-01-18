@@ -1,0 +1,29 @@
+class Solution {
+public:
+    //TC O(1000*n)
+    //SC O(1000)
+    int minimumOperations(vector<int>& nums, int start, int goal) {
+        int n=nums.size();
+        vector<bool> vis(1001,0);
+        queue<int> q; //BFS
+        q.push(start);
+        int ans=0;
+        while(!q.empty()){
+            int s=q.size();
+            while(s--){
+                int curr=q.front();q.pop();
+                if(curr==goal) return ans;
+                if(curr<0 || curr>1000 || vis[curr]==1) continue; //we dont need to perform operations
+                vis[curr]=1;
+                for(int i=0;i<n;i++){
+                    int a=curr+nums[i];
+                    int b=curr-nums[i];
+                    int c=curr^nums[i];
+                    q.push(a);q.push(b);q.push(c);
+                }
+            }
+            ans++;
+        }
+        return -1;
+    }
+};
