@@ -1,0 +1,54 @@
+class Solution {
+public:
+    int cnt=1;
+     void dfs2(int n, int m, int curi, int curj, vector<vector<int>>& grid){
+        if(curi<0 || curi>n-1 || curj<0 || curj>m-1 || grid[curi][curj]!=0) return;
+        grid[curi][curj] = cnt;
+         
+        dfs(n,m,curi+1,curj,grid);        
+        dfs(n,m,curi-1,curj,grid);        
+        dfs(n,m,curi,curj+1,grid);        
+        dfs(n,m,curi,curj-1,grid);        
+    }
+    
+    void dfs(int n, int m, int curi, int curj, vector<vector<int>>& grid){
+        if(curi<0 || curi>n-1 || curj<0 || curj>m-1 || grid[curi][curj]!=0) return;
+        grid[curi][curj] = 2;
+        dfs(n,m,curi+1,curj,grid);        
+        dfs(n,m,curi-1,curj,grid);        
+        dfs(n,m,curi,curj+1,grid);        
+        dfs(n,m,curi,curj-1,grid);        
+    }
+    
+    int closedIsland(vector<vector<int>>& grid) {
+        int n=grid.size();
+        int m=grid[0].size();
+        vector<vector<int>>vis(n,vector<int>(m,0));
+        //n*m
+        
+        //making all the boundary islands 2 as they can never be a closeed island.
+        for(int i=0;i<n;i++){
+            for(int j=0;j<m;j++){
+              if(i==0 || i==n-1 || j==0 || j==m-1){
+                  if(grid[i][j]==0 ){
+                      dfs(n,m,i,j,grid);        
+                  }
+              }  
+            }
+        }
+        for(int i=0;i<n;i++){
+            for(int j=0;j<m;j++){
+              
+                  if(grid[i][j]==0 ){
+                      dfs(n,m,i,j,grid);
+                      cnt++;
+                  }
+                
+              }  
+            }
+        
+        
+        return cnt-1;
+        
+    }
+};
