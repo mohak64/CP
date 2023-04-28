@@ -1,0 +1,49 @@
+class Solution {
+public:
+    int numSimilarGroups(vector<string>& strs) {
+        int ans = 0;
+        int n = strs.size();
+        int m = strs[0].size();
+        vector<vector<int>>graph(n);
+        
+        for(int i=0;i<n;++i){
+            for(int j=i+1;j<n;++j){
+               //we will check if they are similar or not
+               int c = 0;
+               for(int k=0;k<m;++k){
+                   if(strs[i][k] != strs[j][k]){
+                       c++;
+                   }
+               }
+               //cout<<i<<" "<<j<<" "<<c<<"\n";
+               if(c <= 2){
+                  graph[i].push_back(j);
+                  graph[j].push_back(i);
+               }
+
+            }
+        }
+
+         vector<int>vis(n);
+         for(int i=0;i<n;++i){
+             if(vis[i])continue;
+
+             vis[i]++;
+             queue<int>bfs;
+             bfs.push(i);
+             ans++;
+             while(!bfs.empty()){
+                 int node = bfs.front();
+                 bfs.pop();
+
+                 for(auto&x:graph[node]){
+                     if(vis[x])continue;
+                     vis[x]++;
+                     bfs.push(x);
+                 }
+             }
+         }
+
+        return ans;
+    }
+};
